@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Личный кабинет')}"></head>
+<body class="d-flex flex-column min-vh-100">
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="flex-grow-1 py-4">
+    <div class="container">
+        <!-- Приветствие -->
+        <div class="page-header mb-4">
+            <h1 class="fw-bold" style="color: #1f2937;"><i class="bi bi-person-circle me-3" style="color: #6366f1;"></i>Добро пожаловать, <span th:text="${user.firstName}">Пользователь</span>!</h1>
+            <p class="mb-0" style="color: #6b7280;">Это ваш личный кабинет зрителя</p>
+        </div>
+
+        <!-- Быстрые действия -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <a th:href="@{/movies}" class="text-decoration-none">
+                    <div class="stat-card">
+                        <i class="bi bi-film stat-icon"></i>
+                        <div class="stat-label">Каталог фильмов</div>
+                        <p class="text-muted small mb-0">Просмотр и поиск фильмов</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a th:href="@{/tickets/new}" class="text-decoration-none">
+                    <div class="stat-card">
+                        <i class="bi bi-ticket-perforated stat-icon"></i>
+                        <div class="stat-label">Бронирование билета</div>
+                        <p class="text-muted small mb-0">Забронировать билет</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a th:href="@{/tickets/my}" class="text-decoration-none">
+                    <div class="stat-card">
+                        <i class="bi bi-ticket-perforated stat-icon"></i>
+                        <div class="stat-label">Мои билеты</div>
+                        <p class="text-muted small mb-0">История и статусы билетов</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Категории -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-tags me-2"></i>Жанры фильмов</span>
+                        <a th:href="@{/genres}" class="btn btn-sm btn-light">Все жанры</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-6 col-md-4" th:each="genre : ${genres}" th:if="${#lists.size(genres) > 0}">
+                                <a th:href="@{/genres/view/{id}(id=${genre.id})}" class="text-decoration-none">
+                                    <div class="card h-100 text-center p-3 border-0 bg-light">
+                                        <i class="bi bi-film display-6 text-primary mb-2"></i>
+                                        <h6 class="mb-1" th:text="${genre.name}">Жанр</h6>
+                                        <small class="text-muted" th:text="${genre.movieCount} + ' фильмов'">0 фильмов</small>
+                                    </div>
+                                </a>
+                            </div>
+                            <div th:if="${#lists.isEmpty(genres)}" class="col-12 text-center text-muted py-4">
+                                <i class="bi bi-folder-x display-4 mb-3 d-block"></i>
+                                Жанры пока не добавлены
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Последние заказы -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-clock-history me-2"></i>Мои последние билеты
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush" th:if="${#lists.size(myOrders) > 0}">
+                            <a th:each="ticket : ${myTickets}" 
+                               th:href="@{/tickets/view/{id}(id=${ticket.id})}"
+                               class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1" th:text="${ticket.ticketNumber}">TKT-123</h6>
+                                        <small class="text-muted" th:text="${#temporals.format(ticket.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2024</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="badge" 
+                                              th:classappend="${ticket.status.name() == 'USED'} ? 'bg-success' : 
+                                                            (${ticket.status.name() == 'CANCELLED'} ? 'bg-danger' : 
+                                                            (${ticket.status.name() == 'RESERVED'} ? 'bg-warning' : 'bg-info'))"
+                                              th:text="${ticket.status.displayName}">Статус</span>
+                                        <div class="fw-bold text-primary mt-1" th:text="${#numbers.formatDecimal(ticket.price, 0, 'COMMA', 2, 'POINT')} + ' ₽'">0 ₽</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div th:if="${#lists.isEmpty(myTickets)}" class="text-center text-muted py-4">
+                            <i class="bi bi-ticket-perforated display-4 mb-3 d-block"></i>
+                            <p>У вас пока нет билетов</p>
+                            <a th:href="@{/tickets/new}" class="btn btn-primary btn-sm">Забронировать билет</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-star me-2"></i>Популярные фильмы</span>
+                <a th:href="@{/movies}" class="btn btn-sm btn-light">Все фильмы</a>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-6 col-md-3" th:each="movie : ${featuredMovies}" th:if="${#lists.size(featuredMovies) > 0}">
+                        <div class="card movie-card h-100">
+                            <div class="card-img-top">
+                                <i class="bi bi-film"></i>
+                            </div>
+                            <div class="card-body">
+                                <h6 class="card-title" th:text="${movie.name}">Фильм</h6>
+                                <p class="card-text small text-muted" th:text="${movie.genre?.name}">Жанр</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="price-tag" th:text="${#numbers.formatDecimal(movie.price, 0, 'COMMA', 2, 'POINT')} + ' ₽'">0 ₽</span>
+                                    <span class="badge stock-badge" 
+                                          th:classappend="${movie.available} ? 'bg-success' : 'bg-secondary'"
+                                          th:text="${movie.available} ? 'Доступен' : 'Недоступен'">Статус</span>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a th:href="@{/movies/view/{id}(id=${movie.id})}" class="btn btn-outline-primary btn-sm w-100">
+                                    <i class="bi bi-eye me-1"></i>Подробнее
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>
+
+

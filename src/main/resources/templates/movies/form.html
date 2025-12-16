@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head(${movie.id != null} ? 'Редактирование фильма' : 'Новый фильм')}"></head>
+<body class="d-flex flex-column min-vh-100">
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="flex-grow-1 py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Навигация -->
+                <nav aria-label="breadcrumb" class="mb-4">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/movies}">Фильмы</a></li>
+                        <li class="breadcrumb-item active" th:text="${movie.id != null} ? 'Редактирование' : 'Новый фильм'">Форма</li>
+                    </ol>
+                </nav>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="bi" th:classappend="${movie.id != null} ? 'bi-pencil' : 'bi-plus-lg'"></i>
+                            <span th:text="${movie.id != null} ? 'Редактирование фильма' : 'Добавление нового фильма'">Форма фильма</span>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- Сообщение об ошибке -->
+                        <div th:if="${error}" class="alert alert-danger" role="alert">
+                            <i class="bi bi-exclamation-circle me-2"></i><span th:text="${error}">Ошибка</span>
+                        </div>
+
+                        <form th:action="${movie.id != null} ? @{/movies/edit/{id}(id=${movie.id})} : @{/movies/new}" 
+                              th:object="${movie}" method="post">
+                            
+                            <div class="row">
+                                <!-- Название -->
+                                <div class="col-md-8 mb-3">
+                                    <label for="name" class="form-label">Название фильма *</label>
+                                    <input type="text" class="form-control" id="name" th:field="*{name}"
+                                           th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                                           placeholder="Введите название фильма" required>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                                </div>
+
+                                <!-- Цена -->
+                                <div class="col-md-4 mb-3">
+                                    <label for="price" class="form-label">Цена билета (₽) *</label>
+                                    <input type="number" step="0.01" min="0.01" class="form-control" id="price" th:field="*{price}"
+                                           th:classappend="${#fields.hasErrors('price')} ? 'is-invalid' : ''"
+                                           placeholder="0.00" required>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Длительность -->
+                                <div class="col-md-4 mb-3">
+                                    <label for="duration" class="form-label">Длительность (мин) *</label>
+                                    <input type="number" min="1" class="form-control" id="duration" th:field="*{duration}"
+                                           th:classappend="${#fields.hasErrors('duration')} ? 'is-invalid' : ''"
+                                           placeholder="120" required>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('duration')}" th:errors="*{duration}"></div>
+                                </div>
+
+                                <!-- Рейтинг -->
+                                <div class="col-md-4 mb-3">
+                                    <label for="rating" class="form-label">Рейтинг (0-10)</label>
+                                    <input type="number" step="0.1" min="0" max="10" class="form-control" id="rating" th:field="*{rating}"
+                                           placeholder="8.5">
+                                </div>
+
+                                <!-- Дата выхода -->
+                                <div class="col-md-4 mb-3">
+                                    <label for="releaseDate" class="form-label">Дата выхода</label>
+                                    <input type="date" class="form-control" id="releaseDate" th:field="*{releaseDate}">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Жанр -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="genreId" class="form-label">Жанр</label>
+                                    <select class="form-select" id="genreId" name="genreId">
+                                        <option value="">-- Выберите жанр --</option>
+                                        <option th:each="genre : ${genres}" th:value="${genre.id}" th:text="${genre.name}"
+                                                th:selected="${movie.genre != null && movie.genre.id == genre.id}">Жанр</option>
+                                    </select>
+                                </div>
+
+                                <!-- Студия -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="studioId" class="form-label">Киностудия</label>
+                                    <select class="form-select" id="studioId" name="studioId">
+                                        <option value="">-- Выберите студию --</option>
+                                        <option th:each="studio : ${studios}" th:value="${studio.id}" th:text="${studio.companyName}"
+                                                th:selected="${movie.studio != null && movie.studio.id == studio.id}">Студия</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Описание -->
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Описание</label>
+                                <textarea class="form-control" id="description" th:field="*{description}" rows="3"
+                                          placeholder="Описание фильма"></textarea>
+                            </div>
+
+                            <!-- Доступен -->
+                            <div class="mb-4">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="available" th:field="*{available}">
+                                    <label class="form-check-label" for="available">Фильм доступен для показа</label>
+                                </div>
+                            </div>
+
+                            <!-- Кнопки -->
+                            <div class="d-flex justify-content-between">
+                                <a th:href="@{/movies}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>Отмена
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-lg me-2"></i>
+                                    <span th:text="${movie.id != null} ? 'Сохранить изменения' : 'Добавить фильм'">Сохранить</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>
+

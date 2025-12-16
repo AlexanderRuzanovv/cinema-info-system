@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Билеты')}"></head>
+<body class="d-flex flex-column min-vh-100">
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="flex-grow-1 py-4">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold" style="color: #1f2937;"><i class="bi bi-ticket-perforated me-2" style="color: #6366f1;"></i>Управление билетами</h2>
+                <p style="color: #6b7280;" class="mb-0">Всего билетов: <span th:text="${tickets.totalElements}">0</span></p>
+            </div>
+        </div>
+
+        <!-- Сообщения -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i><span th:text="${success}">Успех</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i><span th:text="${error}">Ошибка</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Фильтры -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form th:action="@{/tickets}" method="get" class="row g-3">
+                    <div class="col-md-5">
+                        <div class="search-box">
+                            <i class="bi bi-search"></i>
+                            <input type="text" class="form-control" name="search" placeholder="Поиск по номеру или зрителю..."
+                                   th:value="${currentSearch}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" name="status">
+                            <option value="">Все статусы</option>
+                            <option th:each="st : ${statuses}" th:value="${st.name()}" th:text="${st.displayName}"
+                                    th:selected="${st.name() == currentStatus}">Статус</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select" name="sortBy">
+                            <option value="createdAt" th:selected="${currentSortBy == 'createdAt'}">По дате</option>
+                            <option value="price" th:selected="${currentSortBy == 'price'}">По цене</option>
+                            <option value="ticketNumber" th:selected="${currentSortBy == 'ticketNumber'}">По номеру</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-funnel me-1"></i>Фильтр
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Таблица билетов -->
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>№ билета</th>
+                                <th>Зритель</th>
+                                <th>Фильм</th>
+                                <th>Сеанс</th>
+                                <th>Место</th>
+                                <th>Цена</th>
+                                <th>Статус</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="ticket : ${tickets}">
+                                <td>
+                                    <a th:href="@{/tickets/view/{id}(id=${ticket.id})}" th:text="${ticket.ticketNumber}" 
+                                       class="fw-semibold text-decoration-none">TKT-123</a>
+                                </td>
+                                <td>
+                                    <div th:text="${ticket.customer.fullName}">Зритель</div>
+                                    <small class="text-muted" th:text="${ticket.customer.phone}">Телефон</small>
+                                </td>
+                                <td th:text="${ticket.movie.name}">Фильм</td>
+                                <td th:text="${ticket.showtime != null ? #temporals.format(ticket.showtime, 'dd.MM.yyyy HH:mm') : '-'}">-</td>
+                                <td th:text="${ticket.seat ?: '-'}">-</td>
+                                <td class="fw-bold text-primary" th:text="${#numbers.formatDecimal(ticket.price, 0, 'COMMA', 2, 'POINT')} + ' ₽'">0 ₽</td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${ticket.status.name() == 'USED'} ? 'bg-success' : 
+                                                        (${ticket.status.name() == 'CANCELLED'} ? 'bg-danger' : 
+                                                        (${ticket.status.name() == 'RESERVED'} ? 'bg-warning' : 
+                                                        (${ticket.status.name() == 'PAID'} ? 'bg-info' : 'bg-primary')))"
+                                          th:text="${ticket.status.displayName}">Статус</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/tickets/view/{id}(id=${ticket.id})}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i> Открыть
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr th:if="${tickets.totalElements == 0}">
+                                <td colspan="8" class="text-center py-5">
+                                    <i class="bi bi-inbox display-4 text-muted d-block mb-3"></i>
+                                    <p class="text-muted">Билеты не найдены</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Пагинация -->
+        <nav th:if="${tickets.totalPages > 1}" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${tickets.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/tickets(page=${tickets.number - 1}, search=${currentSearch}, status=${currentStatus})}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                <li th:each="i : ${#numbers.sequence(0, tickets.totalPages - 1)}" 
+                    class="page-item" th:classappend="${i == tickets.number} ? 'active'">
+                    <a class="page-link" th:href="@{/tickets(page=${i}, search=${currentSearch}, status=${currentStatus})}" th:text="${i + 1}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${tickets.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/tickets(page=${tickets.number + 1}, search=${currentSearch}, status=${currentStatus})}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>
+

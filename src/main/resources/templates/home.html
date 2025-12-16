@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Главная')}"></head>
+<body class="d-flex flex-column min-vh-100">
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="flex-grow-1">
+    <!-- Hero Section -->
+    <section class="py-5 position-relative overflow-hidden">
+        <div class="container position-relative" style="z-index: 1;">
+            <div class="row align-items-center min-vh-50">
+                <div class="col-lg-6">
+                    <h1 class="display-3 fw-bold mb-4" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Система управления кинотеатром</h1>
+                    <p class="lead mb-4" style="color: var(--text-secondary); font-size: 1.25rem;">Эффективное управление фильмами, билетами и зрителями</p>
+                    <div sec:authorize="!isAuthenticated()" class="d-flex gap-3 flex-wrap">
+                        <a th:href="@{/login}" class="btn btn-primary btn-lg">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Войти в систему
+                        </a>
+                        <a th:href="@{/register}" class="btn btn-outline-primary btn-lg">
+                            <i class="bi bi-person-plus me-2"></i>Регистрация
+                        </a>
+                    </div>
+                    <div sec:authorize="isAuthenticated()">
+                        <a th:href="@{/dashboard}" class="btn btn-primary btn-lg">
+                            <i class="bi bi-speedometer2 me-2"></i>Перейти в систему
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center d-none d-lg-block">
+                    <div style="position: relative;">
+                        <i class="bi bi-film" style="font-size: 20rem; background: linear-gradient(135deg, #dc2626 0%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 30% 50%, rgba(220, 38, 38, 0.1) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(251, 191, 36, 0.1) 0%, transparent 50%); pointer-events: none;"></div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5 fw-bold" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 2.5rem;">Возможности системы</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 text-center p-4">
+                        <div class="card-body">
+                            <i class="bi bi-film display-4 mb-3" style="background: linear-gradient(135deg, #dc2626 0%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
+                            <h5 class="card-title fw-semibold" style="color: var(--text-primary);">Управление фильмами</h5>
+                            <p class="card-text" style="color: var(--text-muted);">Полный контроль над репертуаром: добавление, редактирование, удаление фильмов с информацией о жанрах и студиях</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 text-center p-4">
+                        <div class="card-body">
+                            <i class="bi bi-ticket-perforated display-4 mb-3" style="background: linear-gradient(135deg, #dc2626 0%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
+                            <h5 class="card-title fw-semibold" style="color: var(--text-primary);">Продажа билетов</h5>
+                            <p class="card-text" style="color: var(--text-muted);">Удобная система бронирования и продажи билетов с различными статусами и управлением сеансами</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 text-center p-4">
+                        <div class="card-body">
+                            <i class="bi bi-people display-4 mb-3" style="background: linear-gradient(135deg, #dc2626 0%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
+                            <h5 class="card-title fw-semibold" style="color: var(--text-primary);">Ролевая модель</h5>
+                            <p class="card-text" style="color: var(--text-muted);">Разграничение прав доступа: зрители, кассиры, менеджеры и администраторы</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 text-center p-4">
+                        <div class="card-body">
+                            <i class="bi bi-search display-4 mb-3" style="background: linear-gradient(135deg, #dc2626 0%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
+                            <h5 class="card-title fw-semibold" style="color: var(--text-primary);">Поиск и фильтрация</h5>
+                            <p class="card-text" style="color: var(--text-muted);">Мощные инструменты поиска по всем данным системы с гибкими фильтрами</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 text-center p-4">
+                        <div class="card-body">
+                            <i class="bi bi-building display-4 mb-3" style="background: linear-gradient(135deg, #dc2626 0%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
+                            <h5 class="card-title fw-semibold" style="color: var(--text-primary);">Работа со студиями</h5>
+                            <p class="card-text" style="color: var(--text-muted);">Ведение базы киностудий с контактной информацией и привязкой к фильмам</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 text-center p-4">
+                        <div class="card-body">
+                            <i class="bi bi-graph-up display-4 mb-3" style="background: linear-gradient(135deg, #dc2626 0%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
+                            <h5 class="card-title fw-semibold" style="color: var(--text-primary);">Аналитика и отчеты</h5>
+                            <p class="card-text" style="color: var(--text-muted);">Статистика продаж билетов, популярности фильмов и выручки для принятия управленческих решений</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Roles Section -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5 fw-bold" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 2.5rem;">Роли пользователей</h2>
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="card h-100">
+                        <div class="card-header" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(30, 41, 59, 0.5) 100%); border-bottom: 2px solid #10b981; color: #10b981;">
+                            <i class="bi bi-person me-2"></i>Зритель
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2"><i class="bi bi-check-circle me-2" style="color: #10b981;"></i>Просмотр репертуара фильмов</li>
+                                <li class="mb-2"><i class="bi bi-check-circle me-2" style="color: #10b981;"></i>Бронирование билетов</li>
+                                <li class="mb-2"><i class="bi bi-check-circle me-2" style="color: #10b981;"></i>Отслеживание статуса билетов</li>
+                                <li><i class="bi bi-check-circle me-2" style="color: #10b981;"></i>Управление профилем</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100">
+                        <div class="card-header" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(30, 41, 59, 0.5) 100%); border-bottom: 2px solid #3b82f6; color: #3b82f6;">
+                            <i class="bi bi-person-badge me-2"></i>Кассир
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2"><i class="bi bi-check-circle me-2" style="color: #3b82f6;"></i>Продажа билетов</li>
+                                <li class="mb-2"><i class="bi bi-check-circle me-2" style="color: #3b82f6;"></i>Изменение статусов билетов</li>
+                                <li class="mb-2"><i class="bi bi-check-circle me-2" style="color: #3b82f6;"></i>Просмотр зрителей</li>
+                                <li><i class="bi bi-check-circle me-2" style="color: #3b82f6;"></i>Статистика продаж</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100">
+                        <div class="card-header" style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(30, 41, 59, 0.5) 100%); border-bottom: 2px solid #fbbf24; color: #fbbf24;">
+                            <i class="bi bi-briefcase me-2"></i>Менеджер
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2"><i class="bi bi-check-circle me-2" style="color: #fbbf24;"></i>Управление фильмами</li>
+                                <li class="mb-2"><i class="bi bi-check-circle me-2" style="color: #fbbf24;"></i>Управление жанрами</li>
+                                <li class="mb-2"><i class="bi bi-check-circle me-2" style="color: #fbbf24;"></i>Работа со студиями</li>
+                                <li><i class="bi bi-check-circle me-2" style="color: #fbbf24;"></i>Аналитика продаж</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100">
+                        <div class="card-header" style="background: linear-gradient(135deg, rgba(220, 38, 38, 0.2) 0%, rgba(30, 41, 59, 0.5) 100%); border-bottom: 2px solid #dc2626; color: #dc2626;">
+                            <i class="bi bi-shield-lock me-2"></i>Администратор
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2"><i class="bi bi-check-circle me-2" style="color: #dc2626;"></i>Все права менеджера</li>
+                                <li class="mb-2"><i class="bi bi-check-circle me-2" style="color: #dc2626;"></i>Управление пользователями</li>
+                                <li class="mb-2"><i class="bi bi-check-circle me-2" style="color: #dc2626;"></i>Изменение ролей</li>
+                                <li><i class="bi bi-check-circle me-2" style="color: #dc2626;"></i>Полный доступ</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+</body>
+</html>
+
+

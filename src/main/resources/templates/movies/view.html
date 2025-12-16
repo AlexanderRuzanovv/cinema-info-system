@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head(${movie.name})}"></head>
+<body class="d-flex flex-column min-vh-100">
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="flex-grow-1 py-4">
+    <div class="container">
+        <!-- Навигация -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/movies}">Фильмы</a></li>
+                <li class="breadcrumb-item active" th:text="${movie.name}">Фильм</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <!-- Изображение фильма -->
+            <div class="col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-body text-center py-5 bg-light">
+                        <i class="bi bi-film display-1 text-primary"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Информация о фильме -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0" th:text="${movie.name}">Название фильма</h4>
+                        <div sec:authorize="hasAnyRole('MANAGER', 'ADMIN')">
+                            <a th:href="@{/movies/edit/{id}(id=${movie.id})}" class="btn btn-warning btn-sm">
+                                <i class="bi bi-pencil me-1"></i>Редактировать
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Цена и статус -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h2 class="text-primary fw-bold" th:text="${#numbers.formatDecimal(movie.price, 0, 'COMMA', 2, 'POINT')} + ' ₽'">0 ₽</h2>
+                                <span class="text-muted">цена билета</span>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <span class="badge fs-6" th:classappend="${movie.available} ? 'bg-success' : 'bg-secondary'"
+                                      th:text="${movie.available} ? 'Доступен' : 'Недоступен'">Статус</span>
+                                <div class="mt-2" th:if="${movie.rating != null}">
+                                    <span class="badge bg-info"
+                                          th:text="'Рейтинг: ' + ${#numbers.formatDecimal(movie.rating, 1, 'POINT', 1, 'POINT')}">Рейтинг</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Описание -->
+                        <div class="mb-4" th:if="${movie.description}">
+                            <h6 class="text-muted">Описание</h6>
+                            <p th:text="${movie.description}">Описание фильма</p>
+                        </div>
+
+                        <!-- Характеристики -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-muted">Жанр</td>
+                                            <td>
+                                                <a th:if="${movie.genre}" 
+                                                   th:href="@{/genres/view/{id}(id=${movie.genre.id})}"
+                                                   th:text="${movie.genre.name}">Жанр</a>
+                                                <span th:unless="${movie.genre}">-</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Киностудия</td>
+                                            <td th:text="${movie.studio?.companyName ?: '-'}">Студия</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Длительность</td>
+                                            <td th:text="${movie.formattedDuration}">-</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <table class="table table-sm">
+                                    <tbody>
+                                        <tr th:if="${movie.releaseDate}">
+                                            <td class="text-muted">Дата выхода</td>
+                                            <td th:text="${#temporals.format(movie.releaseDate, 'dd.MM.yyyy')}">-</td>
+                                        </tr>
+                                        <tr th:if="${movie.rating != null}">
+                                            <td class="text-muted">Рейтинг</td>
+                                            <td>
+                                                <span class="badge bg-info"
+                                                      th:text="${#numbers.formatDecimal(movie.rating, 1, 'POINT', 1, 'POINT')}">-</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Добавлен</td>
+                                            <td th:text="${#temporals.format(movie.createdAt, 'dd.MM.yyyy HH:mm')}">-</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Кнопки действий -->
+        <div class="d-flex justify-content-between mt-4">
+            <a th:href="@{/movies}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Назад к списку
+            </a>
+            <div>
+                <a sec:authorize="hasRole('CUSTOMER')" th:href="@{/tickets/new}" class="btn btn-primary me-2">
+                    <i class="bi bi-ticket-perforated me-2"></i>Купить билет
+                </a>
+                <div sec:authorize="hasAnyRole('MANAGER', 'ADMIN')" class="d-inline">
+                    <a th:href="@{/movies/edit/{id}(id=${movie.id})}" class="btn btn-warning me-2">
+                        <i class="bi bi-pencil me-2"></i>Редактировать
+                    </a>
+                    <form th:action="@{/movies/delete/{id}(id=${movie.id})}" method="post" class="d-inline"
+                          onsubmit="return confirm('Вы уверены, что хотите удалить этот фильм?');">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash me-2"></i>Удалить
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>
+

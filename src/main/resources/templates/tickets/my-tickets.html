@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Мои билеты')}"></head>
+<body class="d-flex flex-column min-vh-100">
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="flex-grow-1 py-4">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2><i class="bi bi-ticket-perforated me-2"></i>Мои билеты</h2>
+                <p class="text-muted mb-0">Всего билетов: <span th:text="${tickets.totalElements}">0</span></p>
+            </div>
+            <a th:href="@{/tickets/new}" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-2"></i>Новый билет
+            </a>
+        </div>
+
+        <!-- Сообщения -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i><span th:text="${success}">Успех</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Билеты -->
+        <div class="row g-4">
+            <div class="col-md-6" th:each="ticket : ${tickets}">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="fw-bold" th:text="${ticket.ticketNumber}">TKT-123</span>
+                        <span class="badge" 
+                              th:classappend="${ticket.status.name() == 'USED'} ? 'bg-success' : 
+                                            (${ticket.status.name() == 'CANCELLED'} ? 'bg-danger' : 
+                                            (${ticket.status.name() == 'RESERVED'} ? 'bg-warning' : 
+                                            (${ticket.status.name() == 'PAID'} ? 'bg-info' : 'bg-primary')))"
+                              th:text="${ticket.status.displayName}">Статус</span>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="mb-2" th:text="${ticket.movie.name}">Фильм</h6>
+                        <p class="text-muted small mb-2" th:if="${ticket.showtime}">
+                            <i class="bi bi-calendar me-1"></i>
+                            <span th:text="${#temporals.format(ticket.showtime, 'dd.MM.yyyy HH:mm')}">01.01.2024</span>
+                        </p>
+                        <p class="mb-2" th:if="${ticket.seat}">
+                            <span class="text-muted">Место: </span>
+                            <span th:text="${ticket.seat}">-</span>
+                        </p>
+                        <h5 class="text-primary mb-0" th:text="${#numbers.formatDecimal(ticket.price, 0, 'COMMA', 2, 'POINT')} + ' ₽'">0 ₽</h5>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a th:href="@{/tickets/view/{id}(id=${ticket.id})}" class="btn btn-outline-primary btn-sm w-100">
+                            <i class="bi bi-eye me-2"></i>Подробнее
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${tickets.totalElements == 0}" class="col-12 text-center py-5">
+                <i class="bi bi-ticket-perforated display-1 text-muted mb-3 d-block"></i>
+                <p class="text-muted mb-4">У вас пока нет билетов</p>
+                <a th:href="@{/tickets/new}" class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-2"></i>Забронировать первый билет
+                </a>
+            </div>
+        </div>
+
+        <!-- Пагинация -->
+        <nav th:if="${tickets.totalPages > 1}" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${tickets.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/tickets/my(page=${tickets.number - 1})}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                <li th:each="i : ${#numbers.sequence(0, tickets.totalPages - 1)}" 
+                    class="page-item" th:classappend="${i == tickets.number} ? 'active'">
+                    <a class="page-link" th:href="@{/tickets/my(page=${i})}" th:text="${i + 1}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${tickets.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/tickets/my(page=${tickets.number + 1})}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>
+

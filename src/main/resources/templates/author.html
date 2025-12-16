@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Об авторе')}"></head>
+<body class="d-flex flex-column min-vh-100">
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="flex-grow-1 py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-5">
+                    <i class="bi bi-person-badge display-1 mb-3"
+                       style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+                              -webkit-background-clip: text;
+                              -webkit-text-fill-color: transparent;
+                              background-clip: text;"></i>
+                    <h1 class="fw-bold"
+                        style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+                               -webkit-background-clip: text;
+                               -webkit-text-fill-color: transparent;
+                               background-clip: text;">
+                        Об авторе
+                    </h1>
+                    <p class="lead" style="color: var(--text-muted);">Информация об авторе курсового проекта</p>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0 fw-semibold">
+                            <i class="bi bi-person-lines-fill me-2" style="color: var(--gold);"></i>
+                            Основные сведения
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4" style="color: var(--text-primary);">ФИО автора</dt>
+                            <dd class="col-sm-8" style="color: var(--text-secondary);">
+                                Рузанов Александр Сергеевич
+                            </dd>
+
+                            <dt class="col-sm-4 mt-3" style="color: var(--text-primary);">Учебное заведение</dt>
+                            <dd class="col-sm-8 mt-3" style="color: var(--text-secondary);">
+                                Финансовый университет, группа ИД23-3
+                            </dd>
+
+                            <dt class="col-sm-4 mt-3" style="color: var(--text-primary);">Контакты</dt>
+                            <dd class="col-sm-8 mt-3" style="color: var(--text-secondary);">
+                                <div class="mb-1">
+                                    <i class="bi bi-telegram me-2" style="color: #0ea5e9;"></i>
+                                    <a href="https://t.me/labubuwechka"
+                                       target="_blank"
+                                       style="color: var(--gold); text-decoration: none;">
+                                        t.me/labubuwechka
+                                    </a>
+                                </div>
+                                <div>
+                                    <i class="bi bi-telephone me-2" style="color: #22c55e;"></i>
+                                    <span>+7&nbsp;988&nbsp;877&nbsp;66&nbsp;55</span>
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0 fw-semibold">
+                            <i class="bi bi-code-slash me-2" style="color: var(--gold);"></i>
+                            Опыт работы с технологиями проекта
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: var(--text-muted);">
+                            В процессе выполнения курсового проекта был получен практический опыт разработки
+                            веб-приложений на <strong style="color: var(--text-primary);">Java 17</strong> с
+                            использованием стека <strong style="color: var(--text-primary);">Spring Boot, Spring Security,
+                            Spring Data JPA и Hibernate</strong>.
+                            Освоены принципы построения многоуровневой архитектуры приложения, реализации CRUD‑операций
+                            и работы с базой данных.
+                        </p>
+                        <p style="color: var(--text-muted);">
+                            Также отработаны навыки разработки пользовательского интерфейса с применением
+                            <strong style="color: var(--text-primary);">Thymeleaf</strong> и
+                            <strong style="color: var(--text-primary);">Bootstrap 5</strong>, настройки сборки проекта с
+                            помощью <strong style="color: var(--text-primary);">Maven</strong>, а также базовые аспекты
+                            настройки безопасности и разграничения прав доступа пользователей.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0 fw-semibold">
+                            <i class="bi bi-calendar-event me-2" style="color: var(--gold);"></i>
+                            Период выполнения проекта
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-1" style="color: var(--text-secondary);">
+                            <strong style="color: var(--text-primary);">Дата начала работ:</strong>
+                            20.11.2025
+                        </p>
+                        <p class="mb-0" style="color: var(--text-secondary);">
+                            <strong style="color: var(--text-primary);">Дата завершения работ:</strong>
+                            14.12.2025
+                        </p>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <a th:href="@{/}" class="btn btn-primary me-2 mb-2">
+                        <i class="bi bi-house me-2"></i>На главную
+                    </a>
+                    <a th:href="@{/about}" class="btn btn-outline-secondary mb-2">
+                        <i class="bi bi-info-circle me-2"></i>О системе
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>
+
+

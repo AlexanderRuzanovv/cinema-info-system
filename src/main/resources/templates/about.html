@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('О системе')}"></head>
+<body class="d-flex flex-column min-vh-100">
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="flex-grow-1 py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-5">
+                    <i class="bi bi-film display-1 mb-3" style="background: linear-gradient(135deg, #dc2626 0%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
+                    <h1 class="fw-bold" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Информационно-справочная система кинотеатра</h1>
+                    <p class="lead" style="color: var(--text-muted);">Курсовая работа</p>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0 fw-semibold"><i class="bi bi-info-circle me-2" style="color: var(--gold);"></i>О проекте</h5>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: var(--text-muted);">Данная система представляет собой веб-приложение для управления кинотеатром. 
+                           Система позволяет вести учёт фильмов, жанров, киностудий и билетов.</p>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0 fw-semibold"><i class="bi bi-gear me-2" style="color: var(--gold);"></i>Технологии</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><i class="bi bi-check-circle me-2" style="color: #10b981;"></i><strong style="color: var(--text-primary);">Java 17</strong> <span style="color: var(--text-muted);">- язык программирования</span></li>
+                            <li class="mb-2"><i class="bi bi-check-circle me-2" style="color: #10b981;"></i><strong style="color: var(--text-primary);">Spring Boot 3.2</strong> <span style="color: var(--text-muted);">- фреймворк для создания веб-приложений</span></li>
+                            <li class="mb-2"><i class="bi bi-check-circle me-2" style="color: #10b981;"></i><strong style="color: var(--text-primary);">Spring Security</strong> <span style="color: var(--text-muted);">- аутентификация и авторизация</span></li>
+                            <li class="mb-2"><i class="bi bi-check-circle me-2" style="color: #10b981;"></i><strong style="color: var(--text-primary);">Spring Data JPA + Hibernate</strong> <span style="color: var(--text-muted);">- работа с базой данных (ORM)</span></li>
+                            <li class="mb-2"><i class="bi bi-check-circle me-2" style="color: #10b981;"></i><strong style="color: var(--text-primary);">H2 / PostgreSQL</strong> <span style="color: var(--text-muted);">- база данных</span></li>
+                            <li class="mb-2"><i class="bi bi-check-circle me-2" style="color: #10b981;"></i><strong style="color: var(--text-primary);">Thymeleaf</strong> <span style="color: var(--text-muted);">- шаблонизатор для веб-страниц</span></li>
+                            <li class="mb-2"><i class="bi bi-check-circle me-2" style="color: #10b981;"></i><strong style="color: var(--text-primary);">Bootstrap 5</strong> <span style="color: var(--text-muted);">- CSS фреймворк</span></li>
+                            <li><i class="bi bi-check-circle me-2" style="color: #10b981;"></i><strong style="color: var(--text-primary);">Maven</strong> <span style="color: var(--text-muted);">- система сборки</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0 fw-semibold"><i class="bi bi-list-check me-2" style="color: var(--gold);"></i>Функциональность</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><i class="bi bi-check2 me-2" style="color: var(--gold);"></i><span style="color: var(--text-secondary);">Регистрация и авторизация пользователей</span></li>
+                            <li class="mb-2"><i class="bi bi-check2 me-2" style="color: var(--gold);"></i><span style="color: var(--text-secondary);">Разделение ролей (Зритель, Кассир, Менеджер, Администратор)</span></li>
+                            <li class="mb-2"><i class="bi bi-check2 me-2" style="color: var(--gold);"></i><span style="color: var(--text-secondary);">CRUD операции для фильмов, жанров, киностудий</span></li>
+                            <li class="mb-2"><i class="bi bi-check2 me-2" style="color: var(--gold);"></i><span style="color: var(--text-secondary);">Управление билетами с различными статусами</span></li>
+                            <li class="mb-2"><i class="bi bi-check2 me-2" style="color: var(--gold);"></i><span style="color: var(--text-secondary);">Поиск и фильтрация данных</span></li>
+                            <li class="mb-2"><i class="bi bi-check2 me-2" style="color: var(--gold);"></i><span style="color: var(--text-secondary);">Сортировка записей по различным критериям</span></li>
+                            <li><i class="bi bi-check2 me-2" style="color: var(--gold);"></i><span style="color: var(--text-secondary);">Административная панель для управления пользователями</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <a th:href="@{/}" class="btn btn-primary">
+                        <i class="bi bi-house me-2"></i>На главную
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>
+
+

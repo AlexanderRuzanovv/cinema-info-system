@@ -1,0 +1,27 @@
+# Maven / Build
+target/
+*.log
+*.tmp
+*.out
+
+# IDE / Tools
+.idea/
+.project
+.classpath
+.settings/
+.vscode/
+*.iml
+
+# OS / Misc
+.DS_Store
+Thumbs.db
+
+# Spring / Local
+*.h2.db
+*.mv.db
+/data/
+
+# Env
+.env
+
+/курсач

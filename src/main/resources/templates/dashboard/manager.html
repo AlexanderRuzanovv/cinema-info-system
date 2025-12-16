@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Панель менеджера')}"></head>
+<body class="d-flex flex-column min-vh-100">
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="flex-grow-1 py-4">
+    <div class="container">
+        <!-- Заголовок -->
+        <div class="page-header mb-4">
+            <h1 class="fw-bold" style="color: #1f2937;"><i class="bi bi-briefcase me-3" style="color: #6366f1;"></i>Панель менеджера</h1>
+            <p class="mb-0" style="color: #6b7280;">Управление фильмами, жанрами и студиями</p>
+        </div>
+
+        <!-- Основная статистика -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="stat-card bg-primary bg-opacity-10">
+                    <i class="bi bi-film stat-icon text-primary"></i>
+                    <div class="stat-value" th:text="${totalMovies}">0</div>
+                    <div class="stat-label">Фильмов</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card bg-info bg-opacity-10">
+                    <i class="bi bi-tags stat-icon text-info"></i>
+                    <div class="stat-value" th:text="${totalGenres}">0</div>
+                    <div class="stat-label">Жанров</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card bg-warning bg-opacity-10">
+                    <i class="bi bi-building stat-icon text-warning"></i>
+                    <div class="stat-value" th:text="${totalStudios}">0</div>
+                    <div class="stat-label">Студий</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card bg-success bg-opacity-10">
+                    <i class="bi bi-ticket-perforated stat-icon text-success"></i>
+                    <div class="stat-value" th:text="${totalTickets}">0</div>
+                    <div class="stat-label">Билетов</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Финансовая статистика -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body text-center py-4">
+                        <i class="bi bi-currency-dollar display-4 text-success mb-2"></i>
+                        <h3 class="fw-bold" th:text="${#numbers.formatDecimal(monthlyRevenue, 0, 'COMMA', 2, 'POINT')} + ' ₽'">0 ₽</h3>
+                        <p class="text-muted mb-0">Выручка за текущий месяц</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body text-center py-4">
+                        <i class="bi bi-archive display-4 text-primary mb-2"></i>
+                        <h3 class="fw-bold" th:text="${#numbers.formatDecimal(inventoryValue, 0, 'COMMA', 2, 'POINT')} + ' ₽'">0 ₽</h3>
+                        <p class="text-muted mb-0">Общая стоимость доступных билетов</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Управление -->
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="bi bi-plus-circle me-2"></i>Управление
+                    </div>
+                    <div class="card-body">
+                        <a th:href="@{/movies/new}" class="btn btn-primary w-100 mb-2">
+                            <i class="bi bi-plus-lg me-2"></i>Добавить фильм
+                        </a>
+                        <a th:href="@{/genres/new}" class="btn btn-outline-primary w-100 mb-2">
+                            <i class="bi bi-plus-lg me-2"></i>Добавить жанр
+                        </a>
+                        <a th:href="@{/studios/new}" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-plus-lg me-2"></i>Добавить студию
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Заказы статистика -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-graph-up me-2"></i>Статус билетов
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>Зарезервировано</span>
+                            <span class="badge bg-warning" th:text="${reservedTickets}">0</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Оплачено</span>
+                            <span class="badge bg-info" th:text="${paidTickets}">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Предупреждения по товарам -->
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header" style="background-color: #fef3c7; color: #92400e;">
+                        <i class="bi bi-exclamation-triangle me-2"></i>Требуют внимания
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="border rounded p-3 text-center">
+                                    <i class="bi bi-film display-6 text-warning"></i>
+                                    <h4 th:text="${#lists.size(unavailableMovies)}">0</h4>
+                                    <small class="text-muted">Недоступны</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="border rounded p-3 text-center">
+                                    <i class="bi bi-ticket-perforated display-6 text-info"></i>
+                                    <h4 th:text="${#lists.size(reservedTickets)}">0</h4>
+                                    <small class="text-muted">Зарезервировано</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="border rounded p-3 text-center">
+                                    <i class="bi bi-clock display-6 text-primary"></i>
+                                    <h4 th:text="${#lists.size(upcomingSessions)}">0</h4>
+                                    <small class="text-muted">Предстоящие сеансы</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Товары с низким остатком -->
+                <div class="card" th:if="${#lists.size(lowStockProducts) > 0}">
+                    <div class="card-header">
+                        <i class="bi bi-film me-2"></i>Недоступные фильмы
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Фильм</th>
+                                        <th>Жанр</th>
+                                        <th>Статус</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="movie, iter : ${unavailableMovies}" th:if="${iter.index < 5}">
+                                        <td th:text="${movie.name}">Фильм</td>
+                                        <td th:text="${movie.genre?.name ?: '-'}">Жанр</td>
+                                        <td>
+                                            <span class="badge bg-secondary">Недоступен</span>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{/movies/edit/{id}(id=${movie.id})}" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Последние билеты -->
+        <div class="card mt-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-clock-history me-2"></i>Последние билеты</span>
+                <a th:href="@{/tickets}" class="btn btn-sm btn-light">Все билеты</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>№ билета</th>
+                                <th>Зритель</th>
+                                <th>Фильм</th>
+                                <th>Дата</th>
+                                <th>Цена</th>
+                                <th>Статус</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="ticket : ${recentTickets}">
+                                <td th:text="${ticket.ticketNumber}">TKT-123</td>
+                                <td th:text="${ticket.customer.fullName}">Зритель</td>
+                                <td th:text="${ticket.movie.name}">Фильм</td>
+                                <td th:text="${#temporals.format(ticket.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2024</td>
+                                <td class="fw-bold" th:text="${#numbers.formatDecimal(ticket.price, 0, 'COMMA', 2, 'POINT')} + ' ₽'">0 ₽</td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${ticket.status.name() == 'USED'} ? 'bg-success' : 
+                                                        (${ticket.status.name() == 'CANCELLED'} ? 'bg-danger' : 
+                                                        (${ticket.status.name() == 'RESERVED'} ? 'bg-warning' : 'bg-info'))"
+                                          th:text="${ticket.status.displayName}">Статус</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/tickets/view/{id}(id=${ticket.id})}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>
+
+
