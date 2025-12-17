@@ -14,7 +14,7 @@ Spring Boot 3 web app for managing a cinema store: products, categories, supplie
 ## Tech Stack
 - Java 17, Spring Boot 3.2
 - Spring Security, Spring Data JPA (Hibernate)
-- Databases: H2 (dev), PostgreSQL (prod)
+- Databases: PostgreSQL (prod)
 - Thymeleaf, Bootstrap 5
 - Maven
 
