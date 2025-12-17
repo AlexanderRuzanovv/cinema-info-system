@@ -46,7 +46,7 @@ mvn spring-boot:run
 |----------|----------|-------------|
 | admin    | admin    | ADMIN       |
 | manager  | manager  | MANAGER     |
-| seller   | seller   | SELLER      |
+| cashier  | cashier  | CASHIER     |
 | customer | customer | CUSTOMER    |
 
 ## Key Endpoints
